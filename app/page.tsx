@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 
 /**
  * ConGusto — "Art of Macarons" workshop page
@@ -20,7 +23,7 @@ const navLinks = ["About us", "Instructor", "Workshop", "Why us"];
 
 const stats = [
   { value: "8K+", label: "Graduate students", color: "text-[#eab628]" },
-  { value: "14+", label: "Graduate students", color: "text-[#e2949f]" },
+  { value: "14+", label: "Mentors", color: "text-[#e2949f]" },
   { value: "2", label: "Locations worldwide", color: "text-[#7d8f4c]" },
 ];
 
@@ -82,15 +85,61 @@ function RegisterButton({
   full?: boolean;
 }) {
   return (
-    <button className={`rounded-full bg-[#eab628] px-8 py-3 text-sm font-bold tracking-wide text-black border border-[#eab628] transition-all duration-300 hover:bg-transparent hover:text-[#eab628] focus:outline-none ${className}`}>
+    <button
+      className={`rounded-full bg-[#eab628] px-8 py-3 text-sm font-bold tracking-wide text-black transition hover:bg-[#f5c94a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#eab628] focus-visible:ring-offset-2 focus-visible:ring-offset-black ${full ? "w-full" : ""
+        } ${className}`}
+    >
       Register now
     </button>
   );
 }
 
+/** Small hook: fires `true` once the element scrolls into view, and stays true. */
+function useInView<T extends HTMLElement>(threshold = 0.2) {
+  const ref = useRef<T | null>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [threshold]);
+
+  return { ref, inView };
+}
+
 export default function Home() {
+  const quoteAnim = useInView<HTMLDivElement>(0.3);
+  const cardAnim0 = useInView<HTMLDivElement>(0.2);
+  const cardAnim1 = useInView<HTMLDivElement>(0.2);
+  const cardAnim2 = useInView<HTMLDivElement>(0.2);
+  const cardAnims = [cardAnim0, cardAnim1, cardAnim2];
+
   return (
     <main className="bg-[#0a0a0a] text-[#ede4d3]">
+      {/* Floating + fade-in-up keyframes used by the pricing cards and quote card */}
+      <style>{`
+        @keyframes floatCard {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+        }
+        .animate-float {
+          animation: floatCard 5s ease-in-out infinite;
+        }
+      `}</style>
+
       {/* NAVBAR */}
       <header className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6 sm:px-8 lg:px-12">
         <a href="#" className="flex items-center gap-1 text-2xl font-bold">
@@ -156,7 +205,13 @@ export default function Home() {
             </div>
 
             <div className="mt-10">
-              <button className="flex h-28 w-28 flex-col items-center justify-center rounded-full bg-[#eab628] text-center text-sm font-bold leading-tight text-black transition hover:bg-[#000000] focus:outline-yellow focus-visible:ring-2 focus-visible:ring-[#eab628] focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:h-32 sm:w-32">
+              <button
+                className="flex h-28 w-28 flex-col items-center justify-center rounded-full border-2 border-[#eab628] bg-[#eab628] text-center text-sm font-bold leading-tight text-black
+                  transition-colors duration-300 ease-out
+                  hover:bg-transparent hover:text-[#eab628]
+                  focus:outline-none focus-visible:ring-2 focus-visible:ring-[#eab628] focus-visible:ring-offset-2 focus-visible:ring-offset-black
+                  sm:h-32 sm:w-32"
+              >
                 Register
                 <br />
                 now
@@ -214,15 +269,18 @@ export default function Home() {
       <section id="instructor" className="relative overflow-hidden">
         <div className="absolute inset-0">
           <Image
-            src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=1600&auto=format&fit=crop"
-            alt="Pastry kitchen background"
+            src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?q=80&w=1600&auto=format&fit=crop"
+            alt="Chef Frank Rizzi standing in his pastry kitchen"
             fill
-            className="object-cover"
+            className="object-cover object-top"
           />
           <div className="absolute inset-0 bg-black/70" />
         </div>
 
-        <div className="relative mx-auto max-w-7xl px-6 py-24 sm:px-8 lg:px-12 lg:py-32">
+        <div
+          ref={quoteAnim.ref}
+          className="relative mx-auto max-w-7xl px-6 py-24 sm:px-8 lg:px-12 lg:py-32"
+        >
           <div className="max-w-xl">
             <Badge>Master Chef</Badge>
             <h2 className="mt-8 font-display text-4xl italic leading-tight sm:text-5xl lg:text-6xl">
@@ -236,7 +294,12 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="relative mt-16 max-w-md rounded-2xl border border-[#eab628]/50 bg-black/60 p-8 backdrop-blur-sm sm:ml-auto sm:mr-16 lg:mr-32">
+          <div
+            className={`relative mt-16 max-w-md rounded-2xl border border-[#eab628]/50 bg-black/60 p-8 backdrop-blur-sm transition-all duration-700 ease-out sm:ml-auto sm:mr-16 lg:mr-32 ${quoteAnim.inView
+              ? "translate-y-0 opacity-100"
+              : "translate-y-20 opacity-0"
+              }`}
+          >
             <span className="absolute -top-5 left-8 font-display text-6xl italic text-[#eab628]">
               &ldquo;
             </span>
@@ -263,41 +326,53 @@ export default function Home() {
         </p>
 
         <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-          {pricingTiers.map((tier) => (
-            <div
-              key={tier.name}
-              className="flex flex-col items-center rounded-2xl border border-[#ede4d3]/10 bg-[#141414] px-8 py-12 text-center transition hover:border-[#ede4d3]/25"
-            >
+          {pricingTiers.map((tier, i) => {
+            const anim = cardAnims[i];
+            return (
               <div
-                className={`flex h-24 w-24 items-center justify-center rounded-full border-2 ${tier.ringColor} ring-4`}
+                key={tier.name}
+                ref={anim.ref}
+                className={`transition-all duration-700 ease-out ${anim.inView
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-10 opacity-0"
+                  }`}
+                style={{ transitionDelay: `${i * 120}ms` }}
               >
-                <span className={`font-display text-2xl font-bold ${tier.priceColor}`}>
-                  {tier.price}
-                </span>
-              </div>
-
-              <h3 className={`mt-6 text-xl font-bold ${tier.nameColor}`}>
-                {tier.name}
-              </h3>
-
-              <ul className="mt-6 space-y-2 text-sm text-[#ede4d3]/70 sm:text-base">
-                {tier.features.map((feature) => (
-                  <li key={feature}>{feature}</li>
-                ))}
-              </ul>
-
-              <div className="mt-8 w-full">
-                <button
-                  className={`w-full rounded-full px-8 py-3 text-sm font-bold tracking-wide transition ${tier.buttonClasses}`}
+                <div
+                  className="animate-float flex h-full flex-col items-center rounded-2xl border border-[#ede4d3]/10 bg-[#141414] px-8 py-12 text-center transition-colors hover:border-[#ede4d3]/25"
+                  style={{ animationDelay: `${i * 0.4}s` }}
                 >
-                  Register now
-                </button>
+                  <div
+                    className={`flex h-24 w-24 items-center justify-center rounded-full border-2 ${tier.ringColor} ring-4`}
+                  >
+                    <span className={`font-display text-2xl font-bold ${tier.priceColor}`}>
+                      {tier.price}
+                    </span>
+                  </div>
+
+                  <h3 className={`mt-6 text-xl font-bold ${tier.nameColor}`}>
+                    {tier.name}
+                  </h3>
+
+                  <ul className="mt-6 space-y-2 text-sm text-[#ede4d3]/70 sm:text-base">
+                    {tier.features.map((feature) => (
+                      <li key={feature}>{feature}</li>
+                    ))}
+                  </ul>
+
+                  <div className="mt-8 w-full">
+                    <button
+                      className={`w-full rounded-full px-8 py-3 text-sm font-bold tracking-wide transition ${tier.buttonClasses}`}
+                    >
+                      Register now
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
     </main>
   );
 }
-
