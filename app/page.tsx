@@ -83,7 +83,7 @@ function RegisterButton({
 }) {
   return (
     <button
-      className={`rounded-full bg-[#eab628] px-8 py-3 text-sm font-bold tracking-wide text-black transition hover:bg-[#f5c94a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#eab628] focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
+      className={`rounded-full bg-[#eab628] px-8 py-3 text-sm font-bold tracking-wide text-black transition hover:bg-[#00000000] focus:outline-yellow focus-visible:ring-2 text-yellow-400 focus-visible:ring-[#eab628] focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
         full ? "w-full" : ""
       } ${className}`}
     >
@@ -160,7 +160,7 @@ export default function Home() {
             </div>
 
             <div className="mt-10">
-              <button className="flex h-28 w-28 flex-col items-center justify-center rounded-full bg-[#eab628] text-center text-sm font-bold leading-tight text-black transition hover:bg-[#f5c94a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#eab628] focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:h-32 sm:w-32">
+              <button className="flex h-28 w-28 flex-col items-center justify-center rounded-full bg-[#eab628] text-center text-sm font-bold leading-tight text-black transition hover:bg-[#000000] focus:outline-yellow focus-visible:ring-2 focus-visible:ring-[#eab628] focus-visible:ring-offset-2 focus-visible:ring-offset-black sm:h-32 sm:w-32">
                 Register
                 <br />
                 now
