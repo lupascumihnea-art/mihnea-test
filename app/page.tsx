@@ -82,11 +82,7 @@ function RegisterButton({
   full?: boolean;
 }) {
   return (
-    <button
-      className={`rounded-full bg-[#eab628] px-8 py-3 text-sm font-bold tracking-wide text-black transition hover:bg-[#00000000] focus:outline-yellow focus-visible:ring-2 text-yellow-400 focus-visible:ring-[#eab628] focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
-        full ? "w-full" : ""
-      } ${className}`}
-    >
+    <button className={`rounded-full bg-[#eab628] px-8 py-3 text-sm font-bold tracking-wide text-black border border-[#eab628] transition-all duration-300 hover:bg-transparent hover:text-[#eab628] focus:outline-none ${className}`}>
       Register now
     </button>
   );
